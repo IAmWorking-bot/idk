@@ -1,1 +1,1 @@
-# idk this is ment to be funny
+# idk this is just met to be funny stuff

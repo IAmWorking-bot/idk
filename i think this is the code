@@ -1,0 +1,144 @@
+import random
+
+card = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+num_time_won = 0
+num_time_lost = 0
+num_time_tied = 0
+num_time_played = 0
+amound_gained_loss = 0
+chips = 100
+base = 25
+growth = 4
+
+print("_______________________________________________________________________")
+print("| ████  █      ███   ███  █   █      ███  ███   ███  █   █          █ |")
+print("| █   █ █     █   █ █     █  █        █  █   █ █     █  █     █    █  |")
+print("| ████  █     █████ █     ███         █  █████ █     ███          █   |")
+print("| █   █ █     █   █ █     █  █     █  █  █   █ █     █  █     █  █ By |")
+print("| ████  █████ █   █  ███  █   █     ██   █   █  ███  █   █      █  AK |")
+print("_______________________________________________________________________")
+
+print("Goal:")
+print("PAY THE FISH")
+start_game = input("Start game")
+if start_game == "no":
+    print("OK have a nice day")
+elif start_game == "yes":
+    while True:
+        num_time_played += 1
+        
+        # scale
+        scale = int(base*(growth*(num_time_played)))   
+        if num_time_played % 4 == 0:
+            variable_active = True
+            print(f"Please pay debt, debt is {scale}")
+            pay_wall = int(input(f"Enter payment: "))
+            if pay_wall < scale:
+                print("YOU ARE POOR, YOU LOSE")
+            else:
+                print("Thank you for paying your debt")
+                chips -= scale
+                print(f"{chips} - {scale}")
+        else:
+            # hand code start
+            print(f"You have {chips} chips")
+            buy_in = int(input(f"How much you putting:"))
+            if buy_in > chips:
+                print("YOU ARE POOR")
+                break
+            elif buy_in <= 0:
+                print("please pick a number higher then 0")
+                print("")
+            else:
+                print(f"And you bid {buy_in}")
+                start = input("Deal (yes/no): ")
+                if start == "yes":
+                    num_time_hand_drawn = 0
+        
+                    hand1 = random.choice(card)
+                    hand2 = random.choice(card)
+                    current_hand = hand1 + hand2
+        
+                    dhand1 = random.choice(card)
+                    dhand2 = random.choice(card)
+                    dealer_hand = dhand1 + dhand2
+        
+                    print()
+                    print("Starting hand:", hand1, hand2)
+                    print("Total:", current_hand)
+        
+                    # game play
+                    while True:
+                        choice = input("hit or stand: ")
+                        print()
+                        if choice == "hit":
+                            hit = random.choice(card)
+                            current_hand += hit
+                            num_time_hand_drawn += 1
+                            print(f"You drew: {hit} | Current total: {current_hand}")
+                            print(f"Dealer shows: {dhand1}")  # Only show one dealer card initially
+                
+                            # Check if player busts immediately after hitting
+                            if current_hand > 21:
+                                print(f"You bust! Your score: {current_hand}")
+                                num_time_lost += 1
+                                amound_gained_loss -= buy_in
+                                chips -= buy_in
+                                break
+                        elif choice == "stand":
+                            print(f"Final score: {current_hand}")
+                            break
+                        else:
+                            print("Pick hit or stand")
+                            print()
+
+                    # Dealer's turn only if player did not bust
+                    if current_hand <= 21:
+                        print("Dealer's turn")
+                        print(f"Dealer got ({dhand1}, {dhand2}) | Dealer total: {dealer_hand}")
+                        while dealer_hand < 17:
+                            print("Dealer hits")
+                            hit = random.choice(card)
+                            dealer_hand += hit
+                            print(f"Dealer drew: {hit} | Dealer total: {dealer_hand}")
+            
+                        # Final outcome comparison
+                        if dealer_hand > 21:
+                            print(f"Dealer has {dealer_hand}. Dealer busts! You win, CONGRATS!!")
+                            num_time_won += 1
+                            amound_gained_loss += buy_in
+                            chips += buy_in
+                        elif dealer_hand > current_hand:
+                            print(f"Dealer has {dealer_hand}, you have {current_hand}. You lose.")
+                            num_time_lost += 1
+                            amound_gained_loss -= buy_in
+                            chips -= buy_in
+                        elif dealer_hand == current_hand:
+                            print(f"Dealer has {dealer_hand}, you have {current_hand}. Tie.")
+                            num_time_tied += 1
+                        else:
+                            print(f"Dealer has {dealer_hand}, you have {current_hand}. You win, CONGRATS!!")
+                            num_time_won += 1
+                            amound_gained_loss += buy_in
+                            chips += buy_in
+    
+                    #replay
+                    print()
+                    play_again = input("play again (yes/no): ")
+                    print()
+                    if play_again != "yes":
+                        break
+                    elif start == "no":
+                        break
+                    else:
+                        print("Please type yes or no.")
+
+        print()
+        print("Final Stats:")
+        print(f"Number of times played: {num_time_played}")
+        print(f"Number of times won: {num_time_won}")
+        print(f"Number of times lost: {num_time_lost}")
+        print(f"Number of times tied: {num_time_tied}")
+        print(f"Profits:{amound_gained_loss}")
+else:
+    print("Pick yes or no please")
